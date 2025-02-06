@@ -612,7 +612,9 @@ class DonationBidSerializer(SerializerWithPermissionsMixin, TrackerModelSerializ
         assert self._has_permission(
             instance
         ), f'tried to serialize a hidden donation bid without permission {self.root_permissions}'
-        return super().to_representation(instance)
+        value = super().to_representation(instance)
+        value['amount'] = float(value['amount'])
+        return value
 
 
 class DonationSerializer(
@@ -685,6 +687,7 @@ class DonationSerializer(
             value.pop('modcomment', None)
         if not self.with_all_comments and instance.commentstate != 'APPROVED':
             value.pop('comment', None)
+        value['amount'] = float(value['amount'])
         return value
 
 
